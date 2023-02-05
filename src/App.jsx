@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import ReactFlow, { useNodesState, useEdgesState, updateEdge, addEdge, Controls } from 'reactflow';
+import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
+import ReactFlow, { useNodesState, useEdgesState, updateEdge, addEdge, Controls, useReactFlow } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
@@ -16,6 +16,7 @@ const nodeTypes = {
 };
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
+
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -76,8 +77,6 @@ const App = () => {
       },
     ]);
 
-
-
     setEdges([
       {
         id: 'e1-2',
@@ -104,7 +103,8 @@ const App = () => {
       },
     ]);
   }, []);
-
+  const [els, setEls] = useState(nodes)
+  const yPos = useRef(0);
   const deleteNodeById = (id) => {
     setNodes(nds => nds.filter(node => node.id !== id));
   };
@@ -134,10 +134,36 @@ const App = () => {
     edgeUpdateSuccessful.current = true;
   }, []);
 
+  const addNodesCall = useCallback(() => {
+    yPos.current += 50;
+    setEls((els) => {
+      console.log(els);
+      return [
+        ...els,
+        {
+          id: Math.floor(Math.random() * 100),
+          height: 37,
+          width: 150,
+          type: 'input',
+          data: { label: "É um real a palma da banana!" },
+          position: { x: 10, y: yPos.current },
+          sourcePosition: 'right'
+        }
+
+      ]
+    })
+  }, [],
+  )
+  const addNode = () => {
+    addNodesCall()
+    setNodes([...nodes, ...els])
+  }
+
 
   return (
     <div className='container'>
-      <h1>para excluir aperte backSpace</h1>
+      <h3>para excluir aperte backSpace</h3>
+      <button onClick={addNode}>ADD</button>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -160,7 +186,6 @@ const App = () => {
 
       >
 
-        <Controls />
       </ReactFlow>
     </div>
   );

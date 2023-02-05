@@ -12,7 +12,7 @@ export default memo(({ data, isConnectable }) => {
                 isConnectable={isConnectable}
             />
             <div>
-                Custom Color Picker Node: <strong>{data.color}</strong>
+                Node de adicionar: <strong>{data.color}</strong>
             </div>
             <input className="nodrag" type="color" onChange={data.onChange} defaultValue={data.color} />
             <Handle
