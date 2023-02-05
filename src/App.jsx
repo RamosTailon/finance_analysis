@@ -76,6 +76,8 @@ const App = () => {
       },
     ]);
 
+
+
     setEdges([
       {
         id: 'e1-2',
@@ -102,6 +104,10 @@ const App = () => {
       },
     ]);
   }, []);
+
+  const deleteNodeById = (id) => {
+    setNodes(nds => nds.filter(node => node.id !== id));
+  };
 
   const onConnect = useCallback(
     (params) =>
@@ -131,11 +137,13 @@ const App = () => {
 
   return (
     <div className='container'>
+      <h1>para excluir aperte backSpace</h1>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodesDelete={deleteNodeById}
         onConnect={onConnect}
         style={{ background: bgColor }}
         nodeTypes={nodeTypes}
