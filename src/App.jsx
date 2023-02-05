@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import ReactFlow, { useNodesState, useEdgesState, addEdge, Controls } from 'reactflow';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import ReactFlow, { useNodesState, useEdgesState, updateEdge, addEdge, Controls } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
@@ -23,7 +23,7 @@ const App = () => {
   const [bgColor, setBgColor] = useState(initBgColor);
 
   useEffect(() => {
-    const onChange = (event) => {
+    const onChanges = (event) => {
       setNodes((nds) =>
         nds.map((node) => {
           if (node.id !== '2') {
@@ -48,15 +48,15 @@ const App = () => {
     setNodes([
       {
         id: '1',
-        type: 'output',
+        type: 'input',
         data: { label: 'Investimento A' },
-        position: { x: 650, y: 150 },
-        targetPosition: 'left',
+        position: { x: 0, y: 50 },
+        sourcePosition: 'right',
       },
       {
         id: '2',
         type: 'selectorNode',
-        data: { onChange: onChange, color: initBgColor },
+        data: { onChange: onChanges, color: initBgColor },
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 300, y: 50 },
       },
@@ -78,10 +78,9 @@ const App = () => {
 
     setEdges([
       {
-        id: 'e1a-2',
-        source: '2',
-        target: '1',
-        sourceHandle: 'a',
+        id: 'e1-2',
+        source: '1',
+        target: '2',
         animated: true,
         style: { stroke: '#fff' },
       },
@@ -109,6 +108,27 @@ const App = () => {
       setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, eds)),
     []
   );
+
+  const edgeUpdateSuccessful = useRef(true);
+
+  const onEdgeUpdateStart = useCallback(() => {
+    edgeUpdateSuccessful.current = false;
+  }, []);
+
+  const onEdgeUpdates = useCallback((oldEdge, newConnection) => {
+    edgeUpdateSuccessful.current = true;
+    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  }, []);
+
+  const onEdgeUpdateEnd = useCallback((_, edge) => {
+    if (!edgeUpdateSuccessful.current) {
+      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    }
+
+    edgeUpdateSuccessful.current = true;
+  }, []);
+
+
   return (
     <div className='container'>
       <ReactFlow
@@ -125,6 +145,11 @@ const App = () => {
         defaultViewport={defaultViewport}
         fitView
         attributionPosition="bottom-left"
+
+        onEdgeUpdate={onEdgeUpdates}
+        onEdgeUpdateStart={onEdgeUpdateStart}
+        onEdgeUpdateEnd={onEdgeUpdateEnd}
+
       >
 
         <Controls />
