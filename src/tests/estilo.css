@@ -1,0 +1,13 @@
+.quadro {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: rgb(53, 154, 40);
+    justify-content: space-between;
+    height: 97vh;
+}
+
+.drag {
+    background-color: pink;
+    width: 18%;
+}
