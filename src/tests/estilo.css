@@ -1,25 +1,46 @@
 .quadro {
     margin: 0;
     padding: 0;
-    display: flex;
-    background-color: rgb(53, 154, 40);
+    /* display: grid;
+    grid-template-areas:
+        "nav nav"
+        "board sidebar";
+    grid-template-columns: 78% 22%;
+    grid-template-rows: 15% 85%; */
+    background-color: #146935;
     justify-content: space-between;
+    width: 100vw;
     height: 97vh;
+    font-family: sans-serif;
+}
+
+.quadro h1 {
+    grid-area: nav;
+    color: #fff;
+}
+
+.container {
+    height: 100%;
+    display: flex;
 }
 
 .drag {
     padding-top: 100px;
-    background-color: pink;
-    width: 23%;
+    z-index: 3;
+    background-color: #2fb570;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    grid-area: sidebar;
+    width: 22%;
+    color: #fff;
+
 }
 
 .function {
     padding: 3px 18px;
-    background-color: green;
+    background-color: #146935;
     cursor: pointer;
 }
 

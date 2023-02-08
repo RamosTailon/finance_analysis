@@ -4,8 +4,7 @@ import ReactFlow, { useNodesState, useEdgesState, updateEdge, addEdge, Controls,
 import 'reactflow/dist/style.css';
 
 import ColorSelectorNode from './nodes/ColorSelectorNode';
-
-import './index.css';
+import DragDrop from './tests/DragDrop';
 
 const initBgColor = '#1A192B';
 
@@ -22,6 +21,9 @@ const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [bgColor, setBgColor] = useState(initBgColor);
+
+  const [xPosition, setXPosition] = useState(10)
+  const [yPosition, setYPosition] = useState(100)
 
   useEffect(() => {
     const onChanges = (event) => {
@@ -134,8 +136,10 @@ const App = () => {
     edgeUpdateSuccessful.current = true;
   }, []);
 
-  const addNodesCall = useCallback(() => {
+  const addNodesCall = (e) => {
+    let valor = e.target.attributes[2].value
     yPos.current += 50;
+    console.log(e.clientX, e.clientY)
     setEls((els) => {
       console.log(els);
       return [
@@ -145,25 +149,35 @@ const App = () => {
           height: 37,
           width: 150,
           type: 'input',
-          data: { label: "É um real a palma da banana!" },
-          position: { x: 10, y: yPos.current },
+          data: { label: valor },
+          // position: { x: 10, y: yPos.current },
+          position: { x: e.clientX - 140, y: e.clientY - 320 },
+          // position: { x: xPos, y: yPos },
           sourcePosition: 'right'
         }
 
       ]
     })
-  }, [],
-  )
-  const addNode = () => {
-    addNodesCall()
     setNodes([...nodes, ...els])
   }
 
 
+  // const dragEnd = (e) => {
+  //   let valor = e.target.attributes[2].value
+  //   console.log(`criou ${valor}`)
+  //   // console.log(e.clientX, e.clientY)
+  //   setXPosition(e.clientX)
+  //   setYPosition(e.clientY)
+  //   addNodesCall()
+  //   setNodes([...nodes, ...els])
+  //   console.log(xPosition, yPosition)
+  // }
+
+
+
   return (
     <div className='container'>
-      <h3>para excluir aperte backSpace</h3>
-      <button onClick={addNode}>ADD</button>
+      <button onClick={addNodesCall}>Add</button>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -187,6 +201,7 @@ const App = () => {
       >
 
       </ReactFlow>
+      <DragDrop dragEnd={addNodesCall} />
     </div>
   );
 };
