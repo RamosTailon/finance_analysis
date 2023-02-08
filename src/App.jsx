@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
-import ReactFlow, { useNodesState, useEdgesState, updateEdge, addEdge, Controls, useReactFlow } from 'reactflow';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import ReactFlow, { useNodesState, useEdgesState, addEdge, Controls, ReactFlowProvider } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
@@ -16,14 +16,16 @@ const nodeTypes = {
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
+let id = 0;
+const getId = () => `dndnode_${id++}`;
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [bgColor, setBgColor] = useState(initBgColor);
 
-  const [xPosition, setXPosition] = useState(10)
-  const [yPosition, setYPosition] = useState(100)
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   useEffect(() => {
     const onChanges = (event) => {
@@ -105,8 +107,7 @@ const App = () => {
       },
     ]);
   }, []);
-  const [els, setEls] = useState(nodes)
-  const yPos = useRef(0);
+
   const deleteNodeById = (id) => {
     setNodes(nds => nds.filter(node => node.id !== id));
   };
@@ -117,91 +118,65 @@ const App = () => {
     []
   );
 
-  const edgeUpdateSuccessful = useRef(true);
+  const onDragOver = useCallback((e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }, [])
 
-  const onEdgeUpdateStart = useCallback(() => {
-    edgeUpdateSuccessful.current = false;
-  }, []);
+  const onDrop = useCallback((e) => {
+    e.preventDefault();
 
-  const onEdgeUpdates = useCallback((oldEdge, newConnection) => {
-    edgeUpdateSuccessful.current = true;
-    setEdges((els) => updateEdge(oldEdge, newConnection, els));
-  }, []);
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const type = e.dataTransfer.getData('application/reactflow');
 
-  const onEdgeUpdateEnd = useCallback((_, edge) => {
-    if (!edgeUpdateSuccessful.current) {
-      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+    // check if the dropped element is valid
+    if (typeof type === 'undefined' || !type) {
+      return;
     }
 
-    edgeUpdateSuccessful.current = true;
-  }, []);
+    const position = reactFlowInstance.project({
+      x: e.clientX - reactFlowBounds.left,
+      y: e.clientY - reactFlowBounds.top,
+    });
+    console.log(e.target.attributes)
+    const newNode = {
+      id: getId(),
+      type,
+      position,
+      data: { label: 'oi' },
+    };
+    setNodes((nds) => nds.concat(newNode))
+  }, [reactFlowInstance]);
 
-  const addNodesCall = (e) => {
-    let valor = e.target.attributes[2].value
-    yPos.current += 50;
-    console.log(e.clientX, e.clientY)
-    setEls((els) => {
-      console.log(els);
-      return [
-        ...els,
-        {
-          id: Math.floor(Math.random() * 100),
-          height: 37,
-          width: 150,
-          type: 'input',
-          data: { label: valor },
-          // position: { x: 10, y: yPos.current },
-          position: { x: e.clientX - 140, y: e.clientY - 320 },
-          // position: { x: xPos, y: yPos },
-          sourcePosition: 'right'
-        }
-
-      ]
-    })
-    setNodes([...nodes, ...els])
-  }
-
-
-  // const dragEnd = (e) => {
-  //   let valor = e.target.attributes[2].value
-  //   console.log(`criou ${valor}`)
-  //   // console.log(e.clientX, e.clientY)
-  //   setXPosition(e.clientX)
-  //   setYPosition(e.clientY)
-  //   addNodesCall()
-  //   setNodes([...nodes, ...els])
-  //   console.log(xPosition, yPosition)
-  // }
-
-
-
+  //e.target.attributes[2].value
   return (
     <div className='container'>
-      <button onClick={addNodesCall}>Add</button>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodesDelete={deleteNodeById}
-        onConnect={onConnect}
-        style={{ background: bgColor }}
-        nodeTypes={nodeTypes}
-        connectionLineStyle={connectionLineStyle}
-        snapToGrid={true}
-        snapGrid={snapGrid}
-        defaultViewport={defaultViewport}
-        fitView
-        attributionPosition="bottom-left"
+      <ReactFlowProvider>
+        <div style={{ width: '75%', height: '100%' }} ref={reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodesDelete={deleteNodeById}
+            onConnect={onConnect}
+            style={{ background: bgColor }}
+            nodeTypes={nodeTypes}
+            connectionLineStyle={connectionLineStyle}
+            snapToGrid={true}
+            snapGrid={snapGrid}
+            defaultViewport={defaultViewport}
+            fitView
+            attributionPosition="bottom-left"
 
-        onEdgeUpdate={onEdgeUpdates}
-        onEdgeUpdateStart={onEdgeUpdateStart}
-        onEdgeUpdateEnd={onEdgeUpdateEnd}
-
-      >
-
-      </ReactFlow>
-      <DragDrop dragEnd={addNodesCall} />
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onInit={setReactFlowInstance}
+          >
+          </ReactFlow>
+        </div>
+        <DragDrop />
+      </ReactFlowProvider>
     </div>
   );
 };
