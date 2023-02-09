@@ -3,7 +3,10 @@ import ReactFlow, { useNodesState, useEdgesState, addEdge, Controls, ReactFlowPr
 
 import 'reactflow/dist/style.css';
 
+//CUSTOM NODES
 import ColorSelectorNode from './nodes/ColorSelectorNode';
+import NumberNode from './nodes/NumberNode';
+
 import DragDrop from './tests/DragDrop';
 
 const initBgColor = '#1A192B';
@@ -129,10 +132,6 @@ const App = () => {
     setNameDrop(data)
   }
 
-  useEffect(() => {
-    console.log(nameDrop)
-  }, [nameDrop])
-
   const onDrop = useCallback((e) => {
     e.preventDefault();
 
@@ -148,7 +147,7 @@ const App = () => {
       x: e.clientX - reactFlowBounds.left,
       y: e.clientY - reactFlowBounds.top,
     });
-    console.log(nameDrop)
+
     const newNode = {
       id: getId(),
       type,

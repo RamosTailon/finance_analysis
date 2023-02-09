@@ -12,7 +12,6 @@ const DragDrop = ({ parentCallback }) => {
 	}
 
 	useEffect(() => {
-		// console.log(valueName)
 		parentCallback(valueName)
 	}, [valueName])
 	return (
