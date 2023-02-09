@@ -123,6 +123,16 @@ const App = () => {
     e.dataTransfer.dropEffect = 'move';
   }, [])
 
+  const [nameDrop, setNameDrop] = useState('')
+
+  const getData = (data) => {
+    setNameDrop(data)
+  }
+
+  useEffect(() => {
+    console.log(nameDrop)
+  }, [nameDrop])
+
   const onDrop = useCallback((e) => {
     e.preventDefault();
 
@@ -138,17 +148,17 @@ const App = () => {
       x: e.clientX - reactFlowBounds.left,
       y: e.clientY - reactFlowBounds.top,
     });
-    console.log(e.target.attributes)
+    console.log(nameDrop)
     const newNode = {
       id: getId(),
       type,
       position,
-      data: { label: 'oi' },
+      data: { label: nameDrop },
     };
     setNodes((nds) => nds.concat(newNode))
-  }, [reactFlowInstance]);
+  }, [reactFlowInstance, nameDrop]);
 
-  //e.target.attributes[2].value
+
   return (
     <div className='container'>
       <ReactFlowProvider>
@@ -175,7 +185,7 @@ const App = () => {
           >
           </ReactFlow>
         </div>
-        <DragDrop />
+        <DragDrop parentCallback={getData} />
       </ReactFlowProvider>
     </div>
   );

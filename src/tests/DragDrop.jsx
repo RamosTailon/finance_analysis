@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './estilo.css'
 
 
-const DragDrop = () => {
+const DragDrop = ({ parentCallback }) => {
+	const [valueName, setValueName] = useState('');
 
 	const onDragStart = (e, nodeType) => {
 		e.dataTransfer.setData('application/reactflow', nodeType);
 		e.dataTransfer.effectAllowed = 'move';
+		setValueName(e.target.attributes[2].value)
 	}
 
+	useEffect(() => {
+		// console.log(valueName)
+		parentCallback(valueName)
+	}, [valueName])
 	return (
 		<div className='drag'>
 			<div className='function'
