@@ -18,7 +18,6 @@ const SliderNode = ({ data, isConnectable }) => {
 				type="source"
 				position="right"
 				style={{ background: '#ecf31a' }}
-				onConnect={(params) => console.log('handle onConnect', params)}
 				isConnectable={isConnectable}
 			/>
 		</>

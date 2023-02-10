@@ -7,6 +7,7 @@ import 'reactflow/dist/style.css';
 import ColorSelectorNode from './nodes/ColorSelectorNode';
 import NumberNode from './nodes/NumberNode';
 import SliderNode from './nodes/SliderNode';
+import InputNumber from './nodes/InputNumber';
 
 import DragDrop from './tests/DragDrop';
 
@@ -17,7 +18,8 @@ const snapGrid = [20, 20];
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
   custom: NumberNode,
-  slider: SliderNode
+  number: InputNumber,
+  slider: SliderNode,
 };
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
@@ -60,9 +62,6 @@ const App = () => {
     const onChangesSlider = (e) => {
       setNodes((nds) =>
         nds.map((node) => {
-          // if (node.id !== node.target) {
-          //   return node;
-          // }
           const numberRender = e.target.value
 
           setNumber(numberRender)
@@ -116,10 +115,17 @@ const App = () => {
       },
       {
         id: '6',
-        type: 'slider',
+        type: `slider`,
         data: { onChange: onChangesSlider },
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 0, y: -10 }
+      },
+      {
+        id: '7',
+        type: `number`,
+        data: { onChange: onChangesSlider },
+        style: { border: '1px solid #777', padding: 10 },
+        position: { x: 0, y: -100 }
       },
     ]);
 

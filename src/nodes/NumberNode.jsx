@@ -11,8 +11,15 @@ const NumberNode = ({ data, isConnectable }) => {
 			<Handle
 				type="target"
 				position="left"
-				style={{ background: '#ecf31a' }}
-				onConnect={(params) => console.log('handle onConnect', params)}
+				id="a"
+				style={{ top: 10, background: '#ecf31a' }}
+				isConnectable={isConnectable}
+			/>
+			<Handle
+				type="target"
+				position="left"
+				id="b"
+				style={{ bottom: 3, top: 'auto', background: '#ecf31a' }}
 				isConnectable={isConnectable}
 			/>
 			<div>
