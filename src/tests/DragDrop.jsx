@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './estilo.css'
 
+//CUSTOM NODES
+import NumberNode from '../nodes/NumberNode';
 
 const DragDrop = ({ parentCallback }) => {
 	const [valueName, setValueName] = useState('');
