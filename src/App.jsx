@@ -6,6 +6,7 @@ import 'reactflow/dist/style.css';
 //CUSTOM NODES
 import ColorSelectorNode from './nodes/ColorSelectorNode';
 import NumberNode from './nodes/NumberNode';
+import SliderNode from './nodes/SliderNode';
 
 import DragDrop from './tests/DragDrop';
 
@@ -15,17 +16,22 @@ const connectionLineStyle = { stroke: '#fff' };
 const snapGrid = [20, 20];
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
+  custom: NumberNode,
+  slider: SliderNode
 };
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
-
+const initNumber = 5
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [bgColor, setBgColor] = useState(initBgColor);
+
+  const [number, setNumber] = useState(initNumber)
+
 
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -41,7 +47,6 @@ const App = () => {
           const color = event.target.value;
 
           setBgColor(color);
-
           return {
             ...node,
             data: {
@@ -52,6 +57,26 @@ const App = () => {
         })
       );
     };
+    const onChangesSlider = (e) => {
+      setNodes((nds) =>
+        nds.map((node) => {
+          // if (node.id !== node.target) {
+          //   return node;
+          // }
+          const numberRender = e.target.value
+
+          setNumber(numberRender)
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              numberRender,
+            },
+          };
+        })
+      );
+    }
+
 
     setNodes([
       {
@@ -64,7 +89,7 @@ const App = () => {
       {
         id: '2',
         type: 'selectorNode',
-        data: { onChange: onChanges, color: initBgColor },
+        data: { onChange: onChanges, color: bgColor },
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 300, y: 50 },
       },
@@ -81,6 +106,20 @@ const App = () => {
         data: { label: 'Retorno B' },
         position: { x: 650, y: 100 },
         targetPosition: 'left',
+      },
+      {
+        id: '5',
+        type: 'custom',
+        data: { onChange: onChangesSlider, numberRender: number },
+        style: { border: '1px solid #777', padding: 10 },
+        position: { x: 350, y: -10 }
+      },
+      {
+        id: '6',
+        type: 'slider',
+        data: { onChange: onChangesSlider },
+        style: { border: '1px solid #777', padding: 10 },
+        position: { x: 0, y: -10 }
       },
     ]);
 
@@ -110,7 +149,6 @@ const App = () => {
       },
     ]);
   }, []);
-
   const deleteNodeById = (id) => {
     setNodes(nds => nds.filter(node => node.id !== id));
   };

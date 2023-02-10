@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React from 'react'
 import { Handle } from 'reactflow';
 
 /*
@@ -16,7 +16,7 @@ const NumberNode = ({ data, isConnectable }) => {
 				isConnectable={isConnectable}
 			/>
 			<div>
-				Número <strong>{data.numberRender}</strong>
+				Número: <strong>{data.numberRender}</strong>
 			</div>
 			<Handle
 				type="source"

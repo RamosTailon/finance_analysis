@@ -9,7 +9,7 @@ const WhiteBoard = () => {
 
   return (
     <div className="quadro">
-      <h1>Whiteboard</h1>
+      <h1>Bank Low Code</h1>
       <App />
     </div>
   )
