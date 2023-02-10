@@ -25,7 +25,7 @@ Data início: 03/02/2023
     - `Mudança de cor de fundo`
 
 <p  align="center">
-  <img width="600px" src="./public/preview_app_lowCode" align="center"></img>
+  <img width="600px" src="./public/preview_app_lowCode.png" align="center"></img>
 </p>
 
 # 🏆 Desafios <a name="id03"></a>
