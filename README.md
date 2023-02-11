@@ -38,7 +38,6 @@ O maior aprendizado foi a como utilizar _props_ do react de forma mais avançada
 
 # 💻 Tecnologia usadas <a name="id04"></a>
 
-<br/>
 
 - ![HTML](./public/assets/HTML.jpg)
 - ![CSS](./public/assets/CSS.jpg)
